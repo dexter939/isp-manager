@@ -1,8 +1,8 @@
 <?php
 
-use IlluminateSupportFacadesRoute;
-use ModulesCoverageHttpControllersFeasibilityController;
-use ModulesCoverageHttpControllersImportStatusController;
+use Illuminate\Support\Facades\Route;
+use Modules\Coverage\Http\Controllers\FeasibilityController;
+use Modules\Coverage\Http\Controllers\ImportStatusController;
 
 Route::prefix('coverage')->middleware(['auth:sanctum', 'active'])->group(function () {
 

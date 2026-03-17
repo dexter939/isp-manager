@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Core\Database\Seeders;
 
-use IlluminateDatabaseSeeder;
-use SpatiePermissionModelsPermission;
-use SpatiePermissionModelsRole;
-use SpatiePermissionPermissionRegistrar;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -19,7 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-         = [
+        $permissions = [
             'coverage.view', 'coverage.import',
             'customers.view', 'customers.create', 'customers.edit', 'customers.delete',
             'contracts.view', 'contracts.create', 'contracts.edit', 'contracts.delete', 'contracts.sign',
@@ -41,14 +41,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin.audit', 'admin.reports',
         ];
 
-        foreach ( as ) {
-            Permission::firstOrCreate(['name' => , 'guard_name' => 'sanctum']);
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'sanctum']);
         }
 
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'sanctum']);
 
-         = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
-        ->syncPermissions([
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
+        $admin->syncPermissions([
             'coverage.view', 'coverage.import',
             'customers.view', 'customers.create', 'customers.edit', 'customers.delete',
             'contracts.view', 'contracts.create', 'contracts.edit', 'contracts.delete', 'contracts.sign',
@@ -67,16 +67,16 @@ class RolesAndPermissionsSeeder extends Seeder
             'admin.users', 'admin.roles', 'admin.quota', 'admin.audit', 'admin.reports',
         ]);
 
-         = Role::firstOrCreate(['name' => 'agent', 'guard_name' => 'sanctum']);
-        ->syncPermissions([
+        $agent = Role::firstOrCreate(['name' => 'agent', 'guard_name' => 'sanctum']);
+        $agent->syncPermissions([
             'coverage.view',
             'customers.view', 'customers.create', 'customers.edit',
             'contracts.view', 'contracts.create', 'contracts.sign',
             'invoices.view', 'ai.marketing',
         ]);
 
-         = Role::firstOrCreate(['name' => 'technician', 'guard_name' => 'sanctum']);
-        ->syncPermissions([
+        $technician = Role::firstOrCreate(['name' => 'technician', 'guard_name' => 'sanctum']);
+        $technician->syncPermissions([
             'coverage.view', 'customers.view', 'contracts.view',
             'orders.view', 'orders.reschedule',
             'radius.view', 'radius.coa', 'radius.logs', 'walled_garden.view',
@@ -86,8 +86,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'ai.ticket_writer',
         ]);
 
-         = Role::firstOrCreate(['name' => 'billing', 'guard_name' => 'sanctum']);
-        ->syncPermissions([
+        $billing = Role::firstOrCreate(['name' => 'billing', 'guard_name' => 'sanctum']);
+        $billing->syncPermissions([
             'customers.view', 'contracts.view',
             'invoices.view', 'invoices.create', 'invoices.edit',
             'invoices.send', 'invoices.send_sdi', 'invoices.export',
@@ -95,12 +95,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'dunning.view', 'dunning.manage', 'admin.reports',
         ]);
 
-         = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'sanctum']);
-        ->syncPermissions(['invoices.view', 'tickets.view', 'tickets.create']);
+        $customer = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'sanctum']);
+        $customer->syncPermissions(['invoices.view', 'tickets.view', 'tickets.create']);
 
         // carrier_webhook: nessun permesso applicativo, middleware dedicato
         Role::firstOrCreate(['name' => 'carrier_webhook', 'guard_name' => 'sanctum']);
 
-        ->command->info('Ruoli IspManager: super_admin, admin, agent, technician, billing, customer, carrier_webhook');
+        $this->command->info('Ruoli IspManager: super_admin, admin, agent, technician, billing, customer, carrier_webhook');
     }
 }
