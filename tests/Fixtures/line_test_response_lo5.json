@@ -1,0 +1,20 @@
+{
+  "_comment": "Open Fiber Line Testing API v2.3 — risposta L05 (Rate Limit / quota exceeded)",
+  "_spec": "GET /linetesting?ResourceId=IT-RM-0001-23456&SourceSystem=ISPMANAGER",
+  "_http_status": 427,
+  "_note": "HTTP 427 Too Many Requests — quota giornaliera esaurita. Gestire con ApiQuotaManager.",
+
+  "ResourceId": "IT-RM-0001-23456",
+  "SourceSystem": "ISPMANAGER",
+  "RequestTimestamp": "2025-04-01T23:59:00Z",
+  "ResponseTimestamp": "2025-04-01T23:59:00Z",
+
+  "Result": "KO",
+  "ErrorCode": "L05",
+  "Description": "Rate limit exceeded. Daily quota for OLO ISPMANAGER has been exhausted. Quota resets at 00:00 UTC.",
+
+  "RetryAfter": "2025-04-02T00:00:00Z",
+  "QuotaResetAt": "2025-04-02T00:00:00Z",
+  "DailyQuotaLimit": 1000,
+  "DailyQuotaUsed": 1000
+}

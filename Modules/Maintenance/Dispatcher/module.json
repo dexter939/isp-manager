@@ -1,0 +1,1 @@
+{"name":"Dispatcher","alias":"dispatcher","description":"Vista timeline dispatcher con capacity planning e drag-and-drop per assegnazione interventi","keywords":["maintenance","dispatcher","scheduling","capacity","field-service"],"priority":7,"providers":["Modules\\Maintenance\\Dispatcher\\Providers\\DispatcherServiceProvider"],"files":[]}

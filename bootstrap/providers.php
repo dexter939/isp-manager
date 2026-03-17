@@ -1,0 +1,9 @@
+<?php
+
+// Laravel 11 explicit provider registration.
+// nwidart/laravel-modules discovers module providers via config/modules.php,
+// so only app-level providers need to be listed here.
+
+return [
+    App\Providers\AppServiceProvider::class,
+];

@@ -1,0 +1,1 @@
+{"name":"FairUsage","alias":"fair_usage","description":"Piani capped con soglia traffico mensile, FUP e Top-Up acquistabili","keywords":["network","fup","cap","traffic","topup"],"priority":4,"providers":["Modules\\Network\\FairUsage\\Providers\\FairUsageServiceProvider"],"files":[]}

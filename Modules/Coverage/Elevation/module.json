@@ -1,0 +1,1 @@
+{"name":"Elevation","alias":"elevation","description":"Profilo di elevazione terreno per link radio WISP con calcolo zona Fresnel","keywords":["coverage","elevation","fresnel","wisp","radio"],"priority":3,"providers":["Modules\\Coverage\\Elevation\\Providers\\ElevationServiceProvider"],"files":[]}

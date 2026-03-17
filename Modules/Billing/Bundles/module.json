@@ -1,0 +1,1 @@
+{"name":"Bundles","alias":"bundles","description":"Piani bundle multi-servizio (internet+VoIP+IP fisso+IPTV) con sconto automatico","keywords":["billing","bundles","plans","services"],"priority":5,"providers":["Modules\\Billing\\Bundles\\Providers\\BundlesServiceProvider"],"files":[]}

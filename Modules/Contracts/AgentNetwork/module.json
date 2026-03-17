@@ -1,0 +1,12 @@
+{
+    "name": "AgentNetwork",
+    "alias": "agent_network",
+    "description": "Rete Agenti con Provvigioni Automatiche",
+    "keywords": ["contracts", "agents", "commissions"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Contracts\\AgentNetwork\\Providers\\AgentNetworkServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
+}

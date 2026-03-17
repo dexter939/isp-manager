@@ -1,0 +1,11 @@
+{
+    "name": "Coverage",
+    "alias": "coverage",
+    "description": "Import NetMap FiberCop CSV, lookup Open Fiber, feasibility engine, PostGIS",
+    "keywords": ["coverage", "postgis", "fibercop", "openfiber"],
+    "priority": 1,
+    "providers": [
+        "Modules\Coverage\Providers\CoverageServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,11 @@
+{
+    "Core": true,
+    "Coverage": true,
+    "Contracts": true,
+    "Provisioning": true,
+    "Billing": true,
+    "Network": true,
+    "Monitoring": true,
+    "AI": true,
+    "Maintenance": true
+}

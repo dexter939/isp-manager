@@ -1,0 +1,12 @@
+{
+    "name": "Sdi",
+    "alias": "sdi",
+    "description": "SDI Fattura Elettronica (Aruba + PEC)",
+    "keywords": ["billing", "sdi", "fattura-elettronica"],
+    "priority": 0,
+    "providers": [
+        "Modules\Billing\Sdi\Providers\SdiServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
+}

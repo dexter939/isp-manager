@@ -1,0 +1,11 @@
+{
+    "name": "Maintenance",
+    "alias": "maintenance",
+    "description": "Workflow morosità, helpdesk interno, inventory",
+    "keywords": ["maintenance", "helpdesk", "inventory", "dunning"],
+    "priority": 8,
+    "providers": [
+        "Modules\Maintenance\Providers\MaintenanceServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,1 @@
+{"name":"CustomerBalance","alias":"customer_balance","description":"Saldo cliente, overpayment, opening balance legacy","keywords":["billing","balance","overpayment"],"priority":5,"providers":["Modules\\Billing\\CustomerBalance\\Providers\\CustomerBalanceServiceProvider"],"files":[]}

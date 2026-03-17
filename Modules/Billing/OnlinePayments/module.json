@@ -1,0 +1,12 @@
+{
+    "name": "OnlinePayments",
+    "alias": "online_payments",
+    "description": "Gateway Pagamenti Online Stripe + Nexi",
+    "keywords": ["billing", "payments", "stripe", "nexi"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Billing\\OnlinePayments\\Providers\\OnlinePaymentsServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
+}

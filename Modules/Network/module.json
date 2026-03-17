@@ -1,0 +1,11 @@
+{
+    "name": "Network",
+    "alias": "network",
+    "description": "RADIUS HA, CoA RFC 5176, Walled Garden, log connessioni",
+    "keywords": ["network", "radius", "coa", "walled-garden"],
+    "priority": 5,
+    "providers": [
+        "Modules\Network\Providers\NetworkServiceProvider"
+    ],
+    "files": []
+}

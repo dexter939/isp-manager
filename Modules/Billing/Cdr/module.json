@@ -1,0 +1,10 @@
+{
+    "name": "Cdr",
+    "alias": "cdr",
+    "description": "CDR VoIP Billing + Anagrafe Tributaria Export",
+    "keywords": ["billing", "cdr", "voip"],
+    "priority": 0,
+    "providers": ["Modules\\Billing\\Cdr\\Providers\\CdrServiceProvider"],
+    "aliases": {},
+    "files": []
+}

@@ -1,0 +1,11 @@
+{
+    "name": "WizardMobile",
+    "alias": "wizard-mobile",
+    "description": "Wizard contratto mobile 6 step con autosave Redis, firma OTP, service worker offline",
+    "keywords": ["wizard", "mobile", "otp", "contracts", "pwa"],
+    "priority": 3,
+    "providers": [
+        "Modules\\Contracts\\WizardMobile\\Providers\\WizardMobileServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,12 @@
+{
+    "name": "PosteItaliane",
+    "alias": "poste_italiane",
+    "description": "Bollettini Postali TD896 + Riconciliazione Poste Italiane",
+    "keywords": ["billing", "poste", "bollettini"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Billing\\PosteItaliane\\Providers\\PosteItalianeServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
+}

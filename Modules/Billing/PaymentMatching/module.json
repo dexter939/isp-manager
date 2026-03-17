@@ -1,0 +1,1 @@
+{"name":"PaymentMatching","alias":"payment_matching","description":"Motore di regole abbinamento pagamenti con simulatore","keywords":["billing","payments","matching"],"priority":5,"providers":["Modules\\Billing\\PaymentMatching\\Providers\\PaymentMatchingServiceProvider"],"files":[]}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         stopOnFailure="false"
+         processIsolation="false">
+
+  <testsuites>
+
+    <!-- ── Core ─────────────────────────────────────────────────────────── -->
+    <testsuite name="Core">
+      <directory>Modules/Contracts/Tests</directory>
+      <directory>Modules/Provisioning/Tests</directory>
+    </testsuite>
+
+    <!-- ── Billing ──────────────────────────────────────────────────────── -->
+    <testsuite name="Billing">
+      <directory>Modules/Billing/Tests</directory>
+      <directory>Modules/Billing/Bundles/Tests</directory>
+      <directory>Modules/Billing/Cdr/Tests</directory>
+      <directory>Modules/Billing/CustomerBalance/Tests</directory>
+      <directory>Modules/Billing/DunningManager/Tests</directory>
+      <directory>Modules/Billing/OnlinePayments/Tests</directory>
+      <directory>Modules/Billing/PaymentMatching/Tests</directory>
+      <directory>Modules/Billing/PosteItaliane/Tests</directory>
+      <directory>Modules/Billing/Proforma/Tests</directory>
+      <directory>Modules/Billing/Sdi/Tests</directory>
+    </testsuite>
+
+    <!-- ── Network & Coverage ───────────────────────────────────────────── -->
+    <testsuite name="Network">
+      <directory>Modules/Network/Tests</directory>
+      <directory>Modules/Network/FairUsage/Tests</directory>
+      <directory>Modules/Coverage/Tests</directory>
+      <directory>Modules/Coverage/Elevation/Tests</directory>
+    </testsuite>
+
+    <!-- ── Infrastructure ───────────────────────────────────────────────── -->
+    <testsuite name="Infrastructure">
+      <directory>Modules/Infrastructure/NetworkSites/Tests</directory>
+      <directory>Modules/Infrastructure/Topology/Tests</directory>
+      <directory>Modules/Infrastructure/TopologyDiscovery/Tests</directory>
+    </testsuite>
+
+    <!-- ── Maintenance & Field Service ──────────────────────────────────── -->
+    <testsuite name="Maintenance">
+      <directory>Modules/Maintenance/Tests</directory>
+      <directory>Modules/Maintenance/Dispatcher/Tests</directory>
+      <directory>Modules/Maintenance/FieldService/Tests</directory>
+      <directory>Modules/Maintenance/InventoryRma/Tests</directory>
+      <directory>Modules/Maintenance/OnCall/Tests</directory>
+      <directory>Modules/Maintenance/PurchaseOrders/Tests</directory>
+      <directory>Modules/Maintenance/RouteOptimizer/Tests</directory>
+    </testsuite>
+
+    <!-- ── Monitoring ───────────────────────────────────────────────────── -->
+    <testsuite name="Monitoring">
+      <directory>Modules/Monitoring/Tests</directory>
+    </testsuite>
+
+    <!-- ── AI & Integrations ────────────────────────────────────────────── -->
+    <testsuite name="AI">
+      <directory>Modules/AI/Tests</directory>
+    </testsuite>
+
+    <!-- ── Contracts Extensions ─────────────────────────────────────────── -->
+    <testsuite name="Contracts">
+      <directory>Modules/Contracts/AgentNetwork/Tests</directory>
+      <directory>Modules/Contracts/DuplicateChecker/Tests</directory>
+      <directory>Modules/Contracts/WizardMobile/Tests</directory>
+    </testsuite>
+
+  </testsuites>
+
+  <source>
+    <include>
+      <directory suffix=".php">app</directory>
+      <directory suffix=".php">Modules</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">Modules/*/Tests</directory>
+      <directory suffix=".php">Modules/*/Database</directory>
+      <directory suffix=".php">Modules/*/Providers</directory>
+      <directory suffix=".php">vendor</directory>
+    </exclude>
+  </source>
+
+  <php>
+    <env name="APP_ENV"              value="testing"/>
+    <env name="APP_KEY"              value="base64:2fl+Ktvkfl+Ktvkfl+Ktvkfl+Ktvkfl+Ktvkfl+Ktv="/>
+    <env name="DB_CONNECTION"        value="sqlite"/>
+    <env name="DB_DATABASE"          value=":memory:"/>
+    <env name="CACHE_DRIVER"         value="array"/>
+    <env name="SESSION_DRIVER"       value="array"/>
+    <env name="QUEUE_CONNECTION"     value="sync"/>
+    <env name="MAIL_MAILER"          value="array"/>
+    <env name="CARRIER_MOCK"         value="true"/>
+    <env name="BROADCAST_DRIVER"     value="log"/>
+    <env name="SCOUT_DRIVER"         value="null"/>
+    <env name="TELESCOPE_ENABLED"    value="false"/>
+    <env name="PULSE_ENABLED"        value="false"/>
+    <env name="LOG_CHANNEL"          value="null"/>
+  </php>
+
+</phpunit>

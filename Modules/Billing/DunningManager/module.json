@@ -1,0 +1,12 @@
+{
+    "name": "DunningManager",
+    "alias": "dunning_manager",
+    "description": "Solleciti automatizzati con policy JSONB configurabile",
+    "keywords": ["billing", "dunning", "solleciti"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Billing\\DunningManager\\Providers\\DunningManagerServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
+}

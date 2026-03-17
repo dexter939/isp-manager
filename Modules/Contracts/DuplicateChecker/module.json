@@ -1,0 +1,1 @@
+{"name":"DuplicateChecker","alias":"duplicate_checker","description":"Controllo duplicati email/telefono in anagrafica clienti","keywords":["crm","customers","duplicates"],"priority":2,"providers":["Modules\\Contracts\\DuplicateChecker\\Providers\\DuplicateCheckerServiceProvider"],"files":[]}

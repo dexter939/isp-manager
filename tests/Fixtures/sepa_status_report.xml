@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SEPA SDD — CustomerPaymentStatusReport pain.002.003.03
+    File di ritorno banca (R-transaction report).
+    Standard: ISO 20022 / CBI (Corporate Banking Interbancario)
+
+    Codici motivo rigetto più comuni:
+      AC04 = Conto chiuso (ClosedAccountNumber)
+      AM04 = Fondi insufficienti (InsufficientFunds)
+      MS02 = Motivo non specificato dal debitore (NotSpecifiedReasonCustomerGenerated)
+      MD01 = Mandato non valido o mancante (NoMandate)
+      MD06 = Il debitore ha revocato l'addebito (RefundRequestByEndCustomer)
+      SL01 = Servizio SEPA non disponibile per il conto
+-->
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.002.003.03"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <CstmrPmtStsRpt>
+        <GrpHdr>
+            <MsgId>BANK-RTRN-20250401-001</MsgId>
+            <CreDtTm>2025-04-01T08:00:00</CreDtTm>
+            <InitgPty>
+                <Nm>BANCA ESEMPIO SPA</Nm>
+            </InitgPty>
+        </GrpHdr>
+
+        <!-- Transazione OK (non inclusa nel file — solo R-transactions) -->
+
+        <!-- R-transaction 1: Fondi insufficienti -->
+        <OrgnlPmtInfAndSts>
+            <OrgnlPmtInfId>ISP-SDD-20250401-001</OrgnlPmtInfId>
+            <TxInfAndSts>
+                <StsId>RTN-001</StsId>
+                <OrgnlEndToEndId>INV-2025-000042</OrgnlEndToEndId>
+                <OrgnlTxId>TXN-20250401-042</OrgnlTxId>
+                <TxSts>RJCT</TxSts>
+                <StsRsnInf>
+                    <Rsn>
+                        <Cd>AM04</Cd>
+                    </Rsn>
+                    <AddtlInf>Fondi insufficienti sul conto del debitore</AddtlInf>
+                </StsRsnInf>
+                <OrgnlTxRef>
+                    <Amt>
+                        <InstdAmt Ccy="EUR">49.90</InstdAmt>
+                    </Amt>
+                    <MndtRltdInf>
+                        <MndtId>SDD-MNDTO-00123</MndtId>
+                    </MndtRltdInf>
+                    <DbtrAcct>
+                        <Id>
+                            <IBAN>IT60X0542811101000000123456</IBAN>
+                        </Id>
+                    </DbtrAcct>
+                    <Dbtr>
+                        <Nm>MARIO ROSSI</Nm>
+                    </Dbtr>
+                </OrgnlTxRef>
+            </TxInfAndSts>
+        </OrgnlPmtInfAndSts>
+
+        <!-- R-transaction 2: Conto chiuso -->
+        <OrgnlPmtInfAndSts>
+            <OrgnlPmtInfId>ISP-SDD-20250401-002</OrgnlPmtInfId>
+            <TxInfAndSts>
+                <StsId>RTN-002</StsId>
+                <OrgnlEndToEndId>INV-2025-000057</OrgnlEndToEndId>
+                <OrgnlTxId>TXN-20250401-057</OrgnlTxId>
+                <TxSts>RJCT</TxSts>
+                <StsRsnInf>
+                    <Rsn>
+                        <Cd>AC04</Cd>
+                    </Rsn>
+                    <AddtlInf>Conto corrente chiuso</AddtlInf>
+                </StsRsnInf>
+                <OrgnlTxRef>
+                    <Amt>
+                        <InstdAmt Ccy="EUR">29.90</InstdAmt>
+                    </Amt>
+                    <MndtRltdInf>
+                        <MndtId>SDD-MNDTO-00087</MndtId>
+                    </MndtRltdInf>
+                    <DbtrAcct>
+                        <Id>
+                            <IBAN>IT60X0542811101000000654321</IBAN>
+                        </Id>
+                    </DbtrAcct>
+                    <Dbtr>
+                        <Nm>ACME SRL</Nm>
+                    </Dbtr>
+                </OrgnlTxRef>
+            </TxInfAndSts>
+        </OrgnlPmtInfAndSts>
+
+        <!-- R-transaction 3: Revoca da parte del debitore (MD06) -->
+        <OrgnlPmtInfAndSts>
+            <OrgnlPmtInfId>ISP-SDD-20250401-003</OrgnlPmtInfId>
+            <TxInfAndSts>
+                <StsId>RTN-003</StsId>
+                <OrgnlEndToEndId>INV-2025-000063</OrgnlEndToEndId>
+                <OrgnlTxId>TXN-20250401-063</OrgnlTxId>
+                <TxSts>RJCT</TxSts>
+                <StsRsnInf>
+                    <Rsn>
+                        <Cd>MD06</Cd>
+                    </Rsn>
+                    <AddtlInf>Il debitore ha richiesto il rimborso tramite la propria banca</AddtlInf>
+                </StsRsnInf>
+                <OrgnlTxRef>
+                    <Amt>
+                        <InstdAmt Ccy="EUR">39.90</InstdAmt>
+                    </Amt>
+                    <MndtRltdInf>
+                        <MndtId>SDD-MNDTO-00201</MndtId>
+                    </MndtRltdInf>
+                    <DbtrAcct>
+                        <Id>
+                            <IBAN>IT60X0542811101000000789012</IBAN>
+                        </Id>
+                    </DbtrAcct>
+                    <Dbtr>
+                        <Nm>LUIGI BIANCHI</Nm>
+                    </Dbtr>
+                </OrgnlTxRef>
+            </TxInfAndSts>
+        </OrgnlPmtInfAndSts>
+    </CstmrPmtStsRpt>
+</Document>

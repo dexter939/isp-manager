@@ -1,0 +1,40 @@
+{
+  "_comment": "FiberCop NGASP — risposta statusZpoint (stato ONT lato cliente)",
+  "_spec": "FiberCop NGASP API v1.4, endpoint GET /zpoint/{codice_ui}/status",
+
+  "correlationId": "fc-req-20250401-abc123",
+  "requestTimestamp": "2025-04-01T10:30:00Z",
+  "responseTimestamp": "2025-04-01T10:30:01Z",
+  "status": "SUCCESS",
+
+  "zpoint": {
+    "codiceUI": "IT-RM-0001-23456",
+    "ontSerialNumber": "ALCL12345678",
+    "ontModel": "G-010G-P",
+    "ontVendor": "Alcatel-Lucent",
+
+    "operationalStatus": "ACTIVE",
+    "adminStatus": "ENABLED",
+    "registrationStatus": "REGISTERED",
+
+    "rxPowerDbm": -19.2,
+    "txPowerDbm": 2.1,
+    "temperatureCelsius": 42,
+    "voltageVolts": 3.28,
+
+    "oltId": "OLT-FC-RM-001",
+    "oltPort": "1/1/4",
+    "gponSerial": "GPON-RM-001-04",
+
+    "lastRegistration": "2025-03-28T08:15:33Z",
+    "uptimeSeconds": 296897,
+
+    "alarms": [],
+
+    "vlanConfig": {
+      "serviceVlan": 300,
+      "cVlan": 2300,
+      "profile": "FTTH_1Gbps_PPPoE"
+    }
+  }
+}

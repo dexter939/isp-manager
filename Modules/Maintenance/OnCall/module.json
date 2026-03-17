@@ -1,0 +1,1 @@
+{"name":"OnCall","alias":"on_call","description":"Turni di reperibilità tecnica con escalation automatica e dispatch allarmi NMS","keywords":["maintenance","oncall","rotation","escalation","alerts"],"priority":7,"providers":["Modules\\Maintenance\\OnCall\\Providers\\OnCallServiceProvider"],"files":[]}

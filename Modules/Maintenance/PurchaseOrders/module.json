@@ -1,0 +1,10 @@
+{
+    "name": "PurchaseOrders",
+    "alias": "purchaseorders",
+    "description": "Purchase Orders with automatic reorder thresholds",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Maintenance\\PurchaseOrders\\Providers\\PurchaseOrdersServiceProvider"
+    ]
+}

@@ -1,0 +1,33 @@
+{
+  "_comment": "Open Fiber Line Testing API v2.3 — risposta test OK",
+  "_spec": "GET /linetesting?ResourceId=IT-RM-0001-23456&SourceSystem=ISPMANAGER",
+  "_header": "lt-api-key: {token}",
+
+  "ResourceId": "IT-RM-0001-23456",
+  "SourceSystem": "ISPMANAGER",
+  "RequestTimestamp": "2025-04-01T10:30:00Z",
+  "ResponseTimestamp": "2025-04-01T10:30:02Z",
+
+  "Result": "OK",
+  "ErrorCode": null,
+  "Description": null,
+
+  "OpticalParameters": {
+    "RxPowerDbm": -19.2,
+    "TxPowerDbm": 2.1,
+    "AttenuationDb": 17.1,
+    "OpticalDistanceMeters": 1850,
+    "OntRegistered": true,
+    "OntSerialNumber": "ALCL12345678"
+  },
+
+  "ServiceStatus": {
+    "AdminStatus": "ENABLED",
+    "OperationalStatus": "UP",
+    "Vlan": 200,
+    "GponPort": "GPON-A01-P01"
+  },
+
+  "LastEventTimestamp": "2025-03-28T08:15:33Z",
+  "UptimeSeconds": 296897
+}

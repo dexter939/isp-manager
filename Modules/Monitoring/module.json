@@ -1,0 +1,11 @@
+{
+    "name": "Monitoring",
+    "alias": "monitoring",
+    "description": "TR-069/GenieACS, SNMP BTS, Line Testing API, alerting",
+    "keywords": ["monitoring", "tr069", "snmp", "genieacs"],
+    "priority": 6,
+    "providers": [
+        "Modules\Monitoring\Providers\MonitoringServiceProvider"
+    ],
+    "files": []
+}

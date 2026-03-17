@@ -1,0 +1,11 @@
+{
+    "name": "Contracts",
+    "alias": "contracts",
+    "description": "CRM clienti, wizard contratti, FEA OTP, PDF",
+    "keywords": ["crm", "contracts", "customers"],
+    "priority": 2,
+    "providers": [
+        "Modules\Contracts\Providers\ContractsServiceProvider"
+    ],
+    "files": []
+}

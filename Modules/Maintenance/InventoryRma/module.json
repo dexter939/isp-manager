@@ -1,0 +1,1 @@
+{"name":"InventoryRma","alias":"inventory_rma","description":"Ciclo di vita inventario CPE con tracking RMA verso fornitori e defect rate","keywords":["maintenance","inventory","rma","lifecycle","hardware"],"priority":7,"providers":["Modules\\Maintenance\\InventoryRma\\Providers\\InventoryRmaServiceProvider"],"files":[]}

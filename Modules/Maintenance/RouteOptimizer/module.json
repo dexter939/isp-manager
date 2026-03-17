@@ -1,0 +1,1 @@
+{"name":"RouteOptimizer","alias":"route_optimizer","description":"Ottimizzazione percorso GPS multi-stop per tecnici sul campo (TSP greedy nearest-neighbor)","keywords":["maintenance","gps","route","optimization","field-service"],"priority":7,"providers":["Modules\\Maintenance\\RouteOptimizer\\Providers\\RouteOptimizerServiceProvider"],"files":[]}

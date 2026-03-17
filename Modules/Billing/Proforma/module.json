@@ -1,0 +1,1 @@
+{"name":"Proforma","alias":"proforma","description":"Flusso Proforma-first: genera proforma, attende pagamento, emette fattura SDI","keywords":["billing","proforma","invoice"],"priority":5,"providers":["Modules\\Billing\\Proforma\\Providers\\ProformaServiceProvider"],"files":[]}

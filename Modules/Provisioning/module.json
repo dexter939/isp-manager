@@ -1,0 +1,11 @@
+{
+    "name": "Provisioning",
+    "alias": "provisioning",
+    "description": "Carrier Gateway, state machine ordini, VLAN manager",
+    "keywords": ["provisioning", "orders", "carrier", "openfiber", "fibercop"],
+    "priority": 3,
+    "providers": [
+        "Modules\Provisioning\Providers\ProvisioningServiceProvider"
+    ],
+    "files": []
+}

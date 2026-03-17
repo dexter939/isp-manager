@@ -1,0 +1,1 @@
+{"name":"NetworkSites","alias":"network_sites","description":"Siti di rete fisici (POP, armadi, datacenter) con hardware e clienti collegati","keywords":["infrastructure","sites","pop","network"],"priority":6,"providers":["Modules\\Infrastructure\\NetworkSites\\Providers\\NetworkSitesServiceProvider"],"files":[]}

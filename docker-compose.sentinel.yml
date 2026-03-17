@@ -1,0 +1,154 @@
+# docker-compose.sentinel.yml
+# Estende docker-compose.yml con Redis Sentinel per alta disponibilità.
+#
+# USO:
+#   docker compose -f docker-compose.yml -f docker-compose.sentinel.yml up -d
+#
+# ARCHITETTURA:
+#   redis-master       → master scrivibile
+#   redis-replica-1    → replica in sola lettura
+#   redis-replica-2    → replica in sola lettura
+#   redis-sentinel-1   → Sentinel (voto failover)
+#   redis-sentinel-2   → Sentinel (voto failover)
+#   redis-sentinel-3   → Sentinel (quorum — minimo 2/3 per failover)
+#
+# LARAVEL:
+#   REDIS_CLIENT=predis
+#   REDIS_SENTINEL_HOST=redis-sentinel-1
+#   REDIS_SENTINEL_PORT=26379
+#   REDIS_SENTINEL_MASTER=ispmaster
+#   REDIS_PASSWORD=secret
+
+version: '3.8'
+
+services:
+
+  # ── Sovrascrive il servizio redis singolo ─────────────────────────────────
+  redis:
+    # Rinomina il servizio redis standalone come redis-master
+    profiles: ["sentinel-disabled"]  # disabilitato in modalità sentinel
+
+  redis-master:
+    image: redis:7.2-alpine
+    container_name: ispmanager-redis-master
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-secret}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+    volumes:
+      - redis_master_data:/data
+    networks:
+      - ispmanager
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-secret}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-replica-1:
+    image: redis:7.2-alpine
+    container_name: ispmanager-redis-replica-1
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-secret}
+      --masterauth ${REDIS_PASSWORD:-secret}
+      --replicaof redis-master 6379
+      --replica-read-only yes
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    volumes:
+      - redis_replica1_data:/data
+    networks:
+      - ispmanager
+
+  redis-replica-2:
+    image: redis:7.2-alpine
+    container_name: ispmanager-redis-replica-2
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-secret}
+      --masterauth ${REDIS_PASSWORD:-secret}
+      --replicaof redis-master 6379
+      --replica-read-only yes
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    volumes:
+      - redis_replica2_data:/data
+    networks:
+      - ispmanager
+
+  redis-sentinel-1:
+    image: redis:7.2-alpine
+    container_name: ispmanager-sentinel-1
+    restart: unless-stopped
+    command: >
+      sh -c "
+        sed 's/REDIS_PASSWORD_PLACEHOLDER/${REDIS_PASSWORD:-secret}/g'
+            /etc/sentinel/sentinel.conf > /tmp/sentinel.conf &&
+        redis-sentinel /tmp/sentinel.conf
+      "
+    ports:
+      - "26379:26379"
+    volumes:
+      - ./docker/redis/sentinel.conf:/etc/sentinel/sentinel.conf:ro
+    depends_on:
+      - redis-master
+      - redis-replica-1
+      - redis-replica-2
+    networks:
+      - ispmanager
+
+  redis-sentinel-2:
+    image: redis:7.2-alpine
+    container_name: ispmanager-sentinel-2
+    restart: unless-stopped
+    command: >
+      sh -c "
+        sed 's/REDIS_PASSWORD_PLACEHOLDER/${REDIS_PASSWORD:-secret}/g'
+            /etc/sentinel/sentinel.conf > /tmp/sentinel.conf &&
+        redis-sentinel /tmp/sentinel.conf
+      "
+    ports:
+      - "26380:26379"
+    volumes:
+      - ./docker/redis/sentinel.conf:/etc/sentinel/sentinel.conf:ro
+    depends_on:
+      - redis-master
+      - redis-replica-1
+    networks:
+      - ispmanager
+
+  redis-sentinel-3:
+    image: redis:7.2-alpine
+    container_name: ispmanager-sentinel-3
+    restart: unless-stopped
+    command: >
+      sh -c "
+        sed 's/REDIS_PASSWORD_PLACEHOLDER/${REDIS_PASSWORD:-secret}/g'
+            /etc/sentinel/sentinel.conf > /tmp/sentinel.conf &&
+        redis-sentinel /tmp/sentinel.conf
+      "
+    ports:
+      - "26381:26379"
+    volumes:
+      - ./docker/redis/sentinel.conf:/etc/sentinel/sentinel.conf:ro
+    depends_on:
+      - redis-master
+      - redis-replica-1
+    networks:
+      - ispmanager
+
+volumes:
+  redis_master_data:
+    driver: local
+  redis_replica1_data:
+    driver: local
+  redis_replica2_data:
+    driver: local

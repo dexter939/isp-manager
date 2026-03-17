@@ -1,0 +1,1 @@
+{"name":"TopologyDiscovery","alias":"topology_discovery","description":"Auto-discovery topologia rete tramite LLDP/SNMP neighbor tables","keywords":["infrastructure","topology","lldp","snmp","discovery"],"priority":6,"providers":["Modules\\Infrastructure\\TopologyDiscovery\\Providers\\TopologyDiscoveryServiceProvider"],"files":[]}

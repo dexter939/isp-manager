@@ -1,0 +1,10 @@
+{
+    "name": "FieldService",
+    "alias": "field_service",
+    "description": "Gestione Tecnici sul Campo + Verbali GPS + Firme OTP",
+    "keywords": ["maintenance", "field-service", "technicians"],
+    "priority": 0,
+    "providers": ["Modules\\Maintenance\\FieldService\\Providers\\FieldServiceServiceProvider"],
+    "aliases": {},
+    "files": []
+}

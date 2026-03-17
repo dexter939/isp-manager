@@ -1,0 +1,1 @@
+{"name":"Topology","alias":"topology","description":"Topologia grafica POP con link tra dispositivi e propagazione allarmi","keywords":["infrastructure","topology","network","graph"],"priority":6,"providers":["Modules\\Infrastructure\\Topology\\Providers\\TopologyServiceProvider"],"files":[]}

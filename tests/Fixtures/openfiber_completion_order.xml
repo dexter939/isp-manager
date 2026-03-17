@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Open Fiber — OF_CompletionOrder_OpenStream
+    Inviato dal carrier quando un ordine di attivazione è completato.
+    Contiene i dati dell'apparato consegnato (ONT serial number) e il GPON.
+    Versione spec: v2.3 (20/02/2026)
+-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:of="http://www.openfiber.it/api/v2/wholesale">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <of:OF_CompletionOrder_OpenStream>
+            <CODICE_ORDINE_OLO>ISP-2025-001234</CODICE_ORDINE_OLO>
+            <CODICE_ORDINE_OF>OF-20250401-001234</CODICE_ORDINE_OF>
+            <STATO_ORDINE>3</STATO_ORDINE>
+            <DATA_COMPLETAMENTO>2025-04-15T14:00:00</DATA_COMPLETAMENTO>
+            <ID_APPARATO_CONSEGNATO>ONT-HUAWEI-A8B3C2D1E0F5</ID_APPARATO_CONSEGNATO>
+            <GPON_DI_ATTESTAZIONE>GPON-B02-P04</GPON_DI_ATTESTAZIONE>
+            <SPLITTER_ID>SPL-RM-001-04</SPLITTER_ID>
+            <PORTA_OLT>OLT-RM-001-04-02</PORTA_OLT>
+            <POTENZA_OTTICA_RX>-18.5</POTENZA_OTTICA_RX>
+            <NOTE>Attivazione completata. ONT verificato e funzionante.</NOTE>
+        </of:OF_CompletionOrder_OpenStream>
+    </soapenv:Body>
+</soapenv:Envelope>

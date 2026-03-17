@@ -1,0 +1,11 @@
+{
+    "name": "Billing",
+    "alias": "billing",
+    "description": "Fatture elettroniche, SDI, SEPA SDD, Stripe, provvigioni",
+    "keywords": ["billing", "invoices", "sdi", "sepa", "stripe"],
+    "priority": 4,
+    "providers": [
+        "Modules\Billing\Providers\BillingServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,11 @@
+{
+    "name": "AI",
+    "alias": "ai",
+    "description": "Ticket writer LLM, Voice gateway, WhatsApp proattivo, marketing predittivo",
+    "keywords": ["ai", "llm", "whatsapp", "marketing"],
+    "priority": 7,
+    "providers": [
+        "Modules\AI\Providers\AIServiceProvider"
+    ],
+    "files": []
+}

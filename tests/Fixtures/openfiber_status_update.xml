@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Open Fiber — OF_StatusUpdate
+    Inviato dal carrier via SOAP al webhook ISP quando cambia lo stato di un ordine.
+    Versione spec: v2.3 (20/02/2026)
+
+    STATO_ORDINE:
+      0 = Acquisito / Accepted
+      1 = In Lavorazione / In Progress
+      2 = Pianificato / Scheduled
+      3 = Completato / Completed
+      4 = Sospeso / Suspended
+      5 = Rigettato / Rejected
+      9 = Annullato / Cancelled
+-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:of="http://www.openfiber.it/api/v2/wholesale">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <of:OF_StatusUpdate>
+            <CODICE_ORDINE_OLO>ISP-2025-001234</CODICE_ORDINE_OLO>
+            <CODICE_ORDINE_OF>OF-20250401-001234</CODICE_ORDINE_OF>
+            <STATO_ORDINE>0</STATO_ORDINE>
+            <DATA_CAMBIO_STATO>2025-04-01T10:30:00</DATA_CAMBIO_STATO>
+            <VLAN>200</VLAN>
+            <GPON_DI_ATTESTAZIONE>GPON-A01-P01</GPON_DI_ATTESTAZIONE>
+            <NOTE>Ordine acquisito correttamente</NOTE>
+        </of:OF_StatusUpdate>
+    </soapenv:Body>
+</soapenv:Envelope>

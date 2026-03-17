@@ -1,0 +1,957 @@
+openapi: 3.1.0
+info:
+  title: ISP Manager API
+  description: |
+    REST API per la piattaforma ISP Manager — BSS/OSS multi-tenant per operatori italiani.
+
+    ## Autenticazione
+    Tutte le route API richiedono un token Bearer (Laravel Sanctum).
+    ```
+    Authorization: Bearer {token}
+    ```
+
+    ## Multi-tenancy
+    Ogni risorsa è isolata per `tenant_id` derivato dall'utente autenticato.
+    Non è necessario passare il `tenant_id` nelle richieste.
+
+    ## Valori monetari
+    Tutti gli importi sono in **centesimi di Euro** (integer). Es: `2990` = €29,90.
+  version: "1.0.0"
+  contact:
+    name: ISP Manager Support
+
+servers:
+  - url: /api
+    description: Production API
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    # ── Shared ─────────────────────────────────────────────────────────────
+    Error:
+      type: object
+      properties:
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+
+    Pagination:
+      type: object
+      properties:
+        current_page: { type: integer }
+        last_page:    { type: integer }
+        per_page:     { type: integer }
+        total:        { type: integer }
+
+    # ── Bundle Plans ───────────────────────────────────────────────────────
+    BundlePlanItem:
+      type: object
+      properties:
+        id:                { type: string, format: uuid }
+        service_type:      { type: string, enum: [internet, voip, iptv, support, other] }
+        description:       { type: string }
+        list_price_amount: { type: integer, description: "Prezzo di listino in centesimi" }
+        sort_order:        { type: integer }
+
+    BundlePlan:
+      type: object
+      properties:
+        id:             { type: string, format: uuid }
+        name:           { type: string }
+        description:    { type: string, nullable: true }
+        price_amount:   { type: integer, description: "Prezzo bundle in centesimi" }
+        price_currency: { type: string, default: EUR }
+        billing_period: { type: string, enum: [monthly, bimonthly, quarterly, semiannual, annual] }
+        is_active:      { type: boolean }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/BundlePlanItem' }
+        created_at: { type: string, format: date-time }
+
+    BundleDiscount:
+      type: object
+      properties:
+        bundle_plan_id: { type: string, format: uuid }
+        list_total_cents:  { type: integer }
+        bundle_price_cents: { type: integer }
+        discount_cents:    { type: integer }
+        discount_percent:  { type: number, format: float }
+
+    # ── Dispatcher ─────────────────────────────────────────────────────────
+    DispatchAssignment:
+      type: object
+      properties:
+        id:                          { type: string, format: uuid }
+        intervention_id:             { type: string, format: uuid }
+        technician_id:               { type: string, format: uuid }
+        scheduled_start:             { type: string, format: date-time }
+        scheduled_end:               { type: string, format: date-time }
+        estimated_duration_minutes:  { type: integer, minimum: 15 }
+        travel_time_minutes:         { type: integer, nullable: true }
+        status:                      { type: string, enum: [scheduled, in_progress, completed, cancelled] }
+        notes:                       { type: string, nullable: true }
+
+    TimelineSlot:
+      type: object
+      properties:
+        technician_id: { type: string, format: uuid }
+        technician_name: { type: string }
+        slots:
+          type: object
+          description: "Mappa ora (8-18) → assignment"
+          additionalProperties:
+            $ref: '#/components/schemas/DispatchAssignment'
+
+    # ── Purchase Orders ────────────────────────────────────────────────────
+    PurchaseOrderItem:
+      type: object
+      properties:
+        id:                { type: string, format: uuid }
+        description:       { type: string }
+        sku:               { type: string, nullable: true }
+        quantity_ordered:  { type: integer }
+        quantity_received: { type: integer }
+        unit_price:        { type: integer, description: "Prezzo unitario in centesimi" }
+
+    PurchaseOrder:
+      type: object
+      properties:
+        id:               { type: string, format: uuid }
+        supplier_id:      { type: string, format: uuid }
+        status:           { type: string, enum: [draft, pending_approval, approved, sent, partial, received, cancelled] }
+        total_amount:     { type: integer, description: "Totale in centesimi" }
+        expected_delivery: { type: string, format: date, nullable: true }
+        notes:            { type: string, nullable: true }
+        created_by:       { type: string, enum: [manual, auto_reorder] }
+        approved_at:      { type: string, format: date-time, nullable: true }
+        sent_at:          { type: string, format: date-time, nullable: true }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/PurchaseOrderItem' }
+
+    ReorderRule:
+      type: object
+      properties:
+        id:              { type: string, format: uuid }
+        item_model_id:   { type: string, format: uuid }
+        min_quantity:    { type: integer }
+        reorder_quantity: { type: integer }
+        supplier_id:     { type: string, format: uuid }
+        auto_approve:    { type: boolean }
+        is_active:       { type: boolean }
+
+    # ── Route Optimizer ────────────────────────────────────────────────────
+    RoutePlan:
+      type: object
+      properties:
+        id:                     { type: string, format: uuid }
+        technician_id:          { type: string, format: uuid }
+        plan_date:              { type: string, format: date }
+        start_address:          { type: string, nullable: true }
+        start_lat:              { type: number, format: float }
+        start_lon:              { type: number, format: float }
+        total_distance_km:      { type: number, format: float }
+        total_duration_minutes: { type: integer }
+        optimized_order:
+          type: array
+          items: { type: string, format: uuid }
+          description: "Lista ordinata di intervention_id"
+        status:                 { type: string, enum: [draft, optimized, failed] }
+
+    # ── Elevation Profile ──────────────────────────────────────────────────
+    ElevationProfile:
+      type: object
+      properties:
+        id:                        { type: string, format: uuid }
+        network_site_id:           { type: string, format: uuid }
+        customer_lat:              { type: number, format: double }
+        customer_lon:              { type: number, format: double }
+        customer_address:          { type: string, nullable: true }
+        antenna_height_m:          { type: integer }
+        cpe_height_m:              { type: integer }
+        frequency_ghz:             { type: number, format: float, nullable: true }
+        distance_km:               { type: number, format: float }
+        has_obstruction:           { type: boolean }
+        max_obstruction_m:         { type: number, format: float }
+        fresnel_clearance_percent: { type: integer, nullable: true, description: ">= 60 = buona copertura" }
+        profile_data:
+          type: array
+          description: "100 punti [distance_km, elevation_m]"
+          items:
+            type: array
+            items: { type: number }
+        calculated_at:             { type: string, format: date-time }
+
+    # ── Topology ───────────────────────────────────────────────────────────
+    TopologyLink:
+      type: object
+      properties:
+        id:               { type: string, format: uuid }
+        source_device_id: { type: string, format: uuid }
+        target_device_id: { type: string, format: uuid }
+        link_type:        { type: string, enum: [fiber, ethernet, wireless, sfp, docsis, other] }
+        bandwidth_mbps:   { type: integer, nullable: true }
+        status:           { type: string, enum: [active, inactive, unknown] }
+        notes:            { type: string, nullable: true }
+
+    TopologyGraph:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:   { type: string, format: uuid }
+              name: { type: string }
+              type: { type: string }
+        edges:
+          type: array
+          items: { $ref: '#/components/schemas/TopologyLink' }
+
+    ImpactAnalysis:
+      type: object
+      properties:
+        device_id:      { type: string, format: uuid }
+        impacted_count: { type: integer }
+        impacted_devices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:   { type: string, format: uuid }
+              name: { type: string }
+              type: { type: string }
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # BUNDLE PLANS
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /bundles:
+    get:
+      tags: [Bundle Plans]
+      summary: Elenca tutti i piani bundle
+      parameters:
+        - { name: is_active, in: query, schema: { type: boolean } }
+        - { name: page,      in: query, schema: { type: integer, default: 1 } }
+      responses:
+        "200":
+          description: Lista paginata
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagination'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/BundlePlan' }
+    post:
+      tags: [Bundle Plans]
+      summary: Crea un nuovo piano bundle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, price_amount, billing_period, items]
+              properties:
+                name:           { type: string, maxLength: 150 }
+                description:    { type: string }
+                price_amount:   { type: integer, minimum: 0 }
+                billing_period: { type: string, enum: [monthly, bimonthly, quarterly, semiannual, annual] }
+                items:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: [description, list_price_amount]
+                    properties:
+                      service_type:      { type: string }
+                      description:       { type: string }
+                      list_price_amount: { type: integer }
+                      sort_order:        { type: integer, default: 0 }
+      responses:
+        "201":
+          description: Bundle creato
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BundlePlan' }
+        "422":
+          description: Validazione fallita
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /bundles/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Bundle Plans]
+      summary: Dettaglio piano bundle
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BundlePlan' }
+    put:
+      tags: [Bundle Plans]
+      summary: Aggiorna piano bundle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:           { type: string }
+                description:    { type: string }
+                price_amount:   { type: integer }
+                billing_period: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BundlePlan' }
+    delete:
+      tags: [Bundle Plans]
+      summary: Elimina piano bundle (solo se nessun abbonamento attivo)
+      responses:
+        "204": { description: Eliminato }
+        "409": { description: Impossibile eliminare — abbonamenti attivi }
+
+  /bundles/{id}/discount:
+    get:
+      tags: [Bundle Plans]
+      summary: Calcola lo sconto del bundle rispetto ai prezzi di listino
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BundleDiscount' }
+
+  /bundles/subscriptions:
+    post:
+      tags: [Bundle Plans]
+      summary: Attiva un abbonamento bundle per un contratto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contract_id, bundle_plan_id]
+              properties:
+                contract_id:       { type: string, format: uuid }
+                bundle_plan_id:    { type: string, format: uuid }
+                custom_price_amount: { type: integer, nullable: true }
+      responses:
+        "201": { description: Abbonamento attivato }
+
+  /bundles/subscriptions/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Bundle Plans]
+      summary: Dettaglio abbonamento bundle
+      responses:
+        "200": { description: OK }
+    delete:
+      tags: [Bundle Plans]
+      summary: Termina abbonamento bundle
+      responses:
+        "200": { description: Terminato }
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # DISPATCHER
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /dispatcher/assignments:
+    post:
+      tags: [Dispatcher]
+      summary: Crea un'assegnazione con controllo conflitti
+      description: |
+        Se il tecnico ha già un intervento sovrapposto (scheduled_start < end AND scheduled_end > start),
+        la richiesta viene rifiutata con HTTP 422.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [intervention_id, technician_id, scheduled_start, estimated_duration_minutes]
+              properties:
+                intervention_id:            { type: string, format: uuid }
+                technician_id:              { type: string, format: uuid }
+                scheduled_start:            { type: string, format: date-time }
+                estimated_duration_minutes: { type: integer, minimum: 15, maximum: 480 }
+                notes:                      { type: string }
+      responses:
+        "201":
+          description: Assegnazione creata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DispatchAssignment' }
+        "422":
+          description: Conflitto orario rilevato
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /dispatcher/assignments/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    put:
+      tags: [Dispatcher]
+      summary: Aggiorna assegnazione (reschedule)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scheduled_start:            { type: string, format: date-time }
+                estimated_duration_minutes: { type: integer }
+                notes:                      { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DispatchAssignment' }
+    delete:
+      tags: [Dispatcher]
+      summary: Cancella assegnazione (status → cancelled)
+      responses:
+        "200": { description: Annullata }
+
+  /dispatcher/timeline/{date}:
+    get:
+      tags: [Dispatcher]
+      summary: Timeline giornaliera di tutti i tecnici
+      parameters:
+        - { name: date, in: path, required: true, schema: { type: string, format: date }, example: "2025-06-10" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string, format: date }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/TimelineSlot' }
+
+  /dispatcher/timeline/{date}/{userId}:
+    get:
+      tags: [Dispatcher]
+      summary: Timeline giornaliera di un singolo tecnico
+      parameters:
+        - { name: date,   in: path, required: true, schema: { type: string, format: date } }
+        - { name: userId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TimelineSlot' }
+
+  /dispatcher/unassigned:
+    get:
+      tags: [Dispatcher]
+      summary: Interventi non ancora assegnati a nessun tecnico
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:            { type: string, format: uuid }
+                        ticket_number: { type: string }
+                        subject:       { type: string }
+                        priority:      { type: string }
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # PURCHASE ORDERS
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /purchase-orders:
+    get:
+      tags: [Purchase Orders]
+      summary: Elenca ordini di acquisto
+      parameters:
+        - { name: status,      in: query, schema: { type: string } }
+        - { name: supplier_id, in: query, schema: { type: string, format: uuid } }
+        - { name: page,        in: query, schema: { type: integer } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagination'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/PurchaseOrder' }
+    post:
+      tags: [Purchase Orders]
+      summary: Crea nuovo ordine di acquisto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [supplier_id, items]
+              properties:
+                supplier_id:       { type: string, format: uuid }
+                expected_delivery: { type: string, format: date }
+                notes:             { type: string }
+                items:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: [description, quantity_ordered]
+                    properties:
+                      description:      { type: string }
+                      sku:              { type: string }
+                      quantity_ordered: { type: integer, minimum: 1 }
+                      unit_price:       { type: integer, minimum: 0 }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+
+  /purchase-orders/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [Purchase Orders]
+      summary: Dettaglio ordine con items e fornitore
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+
+  /purchase-orders/{id}/send:
+    post:
+      tags: [Purchase Orders]
+      summary: Approva e invia ordine al fornitore (draft → approved → sent)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+
+  /purchase-orders/{id}/receive:
+    post:
+      tags: [Purchase Orders]
+      summary: Registra ricezione merce (parziale o totale)
+      description: |
+        Se tutti gli items raggiungono `quantity_received >= quantity_ordered` → stato `received`.
+        Se solo alcuni → stato `partial`.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [id, qty]
+                    properties:
+                      id:  { type: string, format: uuid, description: "purchase_order_item.id" }
+                      qty: { type: integer, minimum: 0 }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+
+  /purchase-orders/{id}/cancel:
+    post:
+      tags: [Purchase Orders]
+      summary: Annulla ordine
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+
+  /purchase-orders/reorder-rules:
+    get:
+      tags: [Purchase Orders]
+      summary: Elenca regole di riordino automatico
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ReorderRule' }
+    post:
+      tags: [Purchase Orders]
+      summary: Crea regola di riordino automatico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [item_model_id, min_quantity, reorder_quantity, supplier_id]
+              properties:
+                item_model_id:    { type: string, format: uuid }
+                min_quantity:     { type: integer, minimum: 0 }
+                reorder_quantity: { type: integer, minimum: 1 }
+                supplier_id:      { type: string, format: uuid }
+                auto_approve:     { type: boolean, default: false }
+      responses:
+        "201": { description: Regola creata }
+
+  /purchase-orders/suppliers:
+    get:
+      tags: [Purchase Orders]
+      summary: Elenca fornitori disponibili per il tenant
+      responses:
+        "200": { description: Lista fornitori }
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # ROUTE OPTIMIZER
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /routes/optimize:
+    post:
+      tags: [Route Optimizer]
+      summary: Ottimizza il percorso per un tecnico in una data
+      description: |
+        Algoritmo: nearest-neighbor TSP (greedy).
+        Salva il piano in `route_plans` e può opzionalmente calcolare le direzioni via OSRM.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [technician_id, plan_date]
+              properties:
+                technician_id: { type: string, format: uuid }
+                plan_date:     { type: string, format: date }
+                start_address: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RoutePlan' }
+
+  /routes/plans/{date}/{userId}:
+    get:
+      tags: [Route Optimizer]
+      summary: Piano di percorso per data e tecnico
+      parameters:
+        - { name: date,   in: path, required: true, schema: { type: string, format: date } }
+        - { name: userId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RoutePlan' }
+        "404": { description: Piano non trovato }
+
+  /routes/plans/{id}/reorder:
+    put:
+      tags: [Route Optimizer]
+      summary: Riordina manualmente i waypoint del piano
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order]
+              properties:
+                order:
+                  type: array
+                  items: { type: string, format: uuid }
+                  description: "Lista ordinata di intervention_id"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RoutePlan' }
+
+  /routes/plans/{id}/directions:
+    get:
+      tags: [Route Optimizer]
+      summary: Ottieni le direzioni di navigazione (OSRM o mock)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_distance_km:      { type: number }
+                  total_duration_minutes: { type: integer }
+                  waypoints:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        intervention_id: { type: string, format: uuid }
+                        lat: { type: number }
+                        lon: { type: number }
+                        address: { type: string }
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # ELEVATION PROFILES
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /elevation/calculate:
+    post:
+      tags: [Elevation Tool]
+      summary: Calcola profilo di elevazione e verifica LOS + Fresnel
+      description: |
+        Usa Open-Elevation API per ottenere 100 punti di quota lungo il percorso.
+        Risultato in cache Redis per 7 giorni per le stesse coordinate.
+
+        **Fresnel zone**: `r = sqrt(λ × d₁ × d₂ / (d₁ + d₂))` dove λ = c/f.
+        `fresnel_clearance_percent >= 60` = copertura sufficiente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [network_site_id, customer_lat, customer_lon, antenna_height_m, cpe_height_m]
+              properties:
+                network_site_id:   { type: string, format: uuid }
+                customer_lat:      { type: number, format: double }
+                customer_lon:      { type: number, format: double }
+                customer_address:  { type: string }
+                antenna_height_m:  { type: integer, minimum: 1, maximum: 100, default: 10 }
+                cpe_height_m:      { type: integer, minimum: 1, maximum: 30, default: 3 }
+                frequency_ghz:     { type: number, format: float, minimum: 0.1, maximum: 100, description: "Omettere per LOS senza Fresnel" }
+      responses:
+        "201":
+          description: Profilo calcolato (nuovo) o recuperato da cache
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ElevationProfile' }
+        "422":
+          description: Validazione fallita o sito senza coordinate GPS
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /elevation/profiles/{id}:
+    get:
+      tags: [Elevation Tool]
+      summary: Dettaglio profilo di elevazione
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ElevationProfile' }
+
+  /contracts/{contractId}/elevation:
+    get:
+      tags: [Elevation Tool]
+      summary: Profilo di elevazione associato a un contratto
+      parameters:
+        - { name: contractId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ElevationProfile' }
+        "404": { description: Nessun profilo per questo contratto }
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # TOPOLOGY
+  # ══════════════════════════════════════════════════════════════════════════
+
+  /topology/full:
+    get:
+      tags: [Topology]
+      summary: Grafo completo della topologia di rete
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopologyGraph' }
+
+  /topology/sites/{siteId}/graph:
+    get:
+      tags: [Topology]
+      summary: Sottografo della topologia a partire da un sito
+      parameters:
+        - { name: siteId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopologyGraph' }
+
+  /topology/links:
+    post:
+      tags: [Topology]
+      summary: Crea un link tra due device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [source_device_id, target_device_id, link_type]
+              properties:
+                source_device_id:   { type: string, format: uuid }
+                target_device_id:   { type: string, format: uuid }
+                source_interface:   { type: string }
+                target_interface:   { type: string }
+                link_type:          { type: string, enum: [fiber, ethernet, wireless, sfp, docsis, other] }
+                bandwidth_mbps:     { type: integer }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopologyLink' }
+
+  /topology/links/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    put:
+      tags: [Topology]
+      summary: Aggiorna link topologico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                link_type:     { type: string }
+                bandwidth_mbps: { type: integer }
+                status:        { type: string }
+                notes:         { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopologyLink' }
+    delete:
+      tags: [Topology]
+      summary: Elimina link topologico
+      responses:
+        "204": { description: Eliminato }
+
+  /topology/devices/{deviceId}/impact:
+    get:
+      tags: [Topology]
+      summary: Analisi impatto — device downstream colpiti da un guasto
+      description: |
+        BFS sul grafo `topology_links` a partire dal device indicato.
+        Utile per l'alert suppression e la root cause analysis.
+      parameters:
+        - { name: deviceId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImpactAnalysis' }
+
+  /topology/discovery/run:
+    post:
+      tags: [Topology]
+      summary: Avvia una sessione di scoperta automatica LLDP/SNMP
+      responses:
+        "201":
+          description: Discovery completata (o accodata)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:               { type: string, format: uuid }
+                  status:           { type: string, enum: [completed, running, failed] }
+                  devices_scanned:  { type: integer }
+                  links_discovered: { type: integer }
+
+  /topology/discovery/candidates/{id}/confirm:
+    post:
+      tags: [Topology]
+      summary: Conferma un candidato di discovery (crea topology_link)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TopologyLink' }
+
+  /topology/discovery/candidates/{id}/reject:
+    post:
+      tags: [Topology]
+      summary: Rifiuta un candidato di discovery
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200": { description: Candidato rifiutato }
+
+tags:
+  - name: Bundle Plans
+    description: Gestione piani bundle multi-servizio e abbonamenti
+  - name: Dispatcher
+    description: Pianificazione e assegnazione interventi ai tecnici con controllo conflitti
+  - name: Purchase Orders
+    description: Ordini di acquisto con workflow approvazione e ricezione merce
+  - name: Route Optimizer
+    description: Ottimizzazione percorso GPS per tecnici sul campo (TSP nearest-neighbor)
+  - name: Elevation Tool
+    description: Calcolo profilo di elevazione e verifica LOS/Fresnel per link wireless
+  - name: Topology
+    description: Gestione topologia di rete, link tra device, discovery LLDP/SNMP e analisi impatto
