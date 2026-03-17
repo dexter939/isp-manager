@@ -33,7 +33,7 @@ return new class extends Migration
             'name'       => 'Default ISP',
             'slug'       => 'default',
             'settings'   => json_encode([]),
-            'is_active'  => true,
+            'is_active'  => DB::raw('true'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
