@@ -199,7 +199,6 @@ section "Generazione docker-compose.override.yml"
 
 cat > docker-compose.override.yml <<EOF
 # Auto-generato da install-server1.sh — Server Principale
-version: '3.8'
 
 services:
   postgres:

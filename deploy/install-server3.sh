@@ -190,7 +190,6 @@ section "Generazione docker-compose.server3.yml"
 
 cat > "${WORK_DIR}/docker-compose.server3.yml" <<EOF
 # Auto-generato da install-server3.sh — Server Terzo (Infrastruttura HA)
-version: '3.8'
 
 services:
 

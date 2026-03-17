@@ -19,8 +19,6 @@
 #   REDIS_SENTINEL_MASTER=ispmaster
 #   REDIS_PASSWORD=secret
 
-version: '3.8'
-
 services:
 
   # ── Sovrascrive il servizio redis singolo ─────────────────────────────────

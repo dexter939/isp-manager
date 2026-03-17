@@ -205,7 +205,6 @@ section "Generazione docker-compose.server2.yml"
 
 cat > docker-compose.server2.yml <<EOF
 # Auto-generato da install-server2.sh — Server Secondario
-version: '3.8'
 
 services:
 
