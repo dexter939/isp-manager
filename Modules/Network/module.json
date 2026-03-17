@@ -5,7 +5,7 @@
     "keywords": ["network", "radius", "coa", "walled-garden"],
     "priority": 5,
     "providers": [
-        "Modules\Network\Providers\NetworkServiceProvider"
+        "Modules\\Network\\Providers\\NetworkServiceProvider"
     ],
     "files": []
 }

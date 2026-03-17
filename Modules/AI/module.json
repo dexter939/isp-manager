@@ -5,7 +5,7 @@
     "keywords": ["ai", "llm", "whatsapp", "marketing"],
     "priority": 7,
     "providers": [
-        "Modules\AI\Providers\AIServiceProvider"
+        "Modules\\AI\\Providers\\AIServiceProvider"
     ],
     "files": []
 }

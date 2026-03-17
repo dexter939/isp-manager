@@ -5,7 +5,7 @@
     "keywords": ["maintenance", "helpdesk", "inventory", "dunning"],
     "priority": 8,
     "providers": [
-        "Modules\Maintenance\Providers\MaintenanceServiceProvider"
+        "Modules\\Maintenance\\Providers\\MaintenanceServiceProvider"
     ],
     "files": []
 }

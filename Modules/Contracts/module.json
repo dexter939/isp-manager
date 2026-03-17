@@ -5,7 +5,7 @@
     "keywords": ["crm", "contracts", "customers"],
     "priority": 2,
     "providers": [
-        "Modules\Contracts\Providers\ContractsServiceProvider"
+        "Modules\\Contracts\\Providers\\ContractsServiceProvider"
     ],
     "files": []
 }

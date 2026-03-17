@@ -5,7 +5,7 @@
     "keywords": ["monitoring", "tr069", "snmp", "genieacs"],
     "priority": 6,
     "providers": [
-        "Modules\Monitoring\Providers\MonitoringServiceProvider"
+        "Modules\\Monitoring\\Providers\\MonitoringServiceProvider"
     ],
     "files": []
 }

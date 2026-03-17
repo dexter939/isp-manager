@@ -5,7 +5,7 @@
     "keywords": ["billing", "invoices", "sdi", "sepa", "stripe"],
     "priority": 4,
     "providers": [
-        "Modules\Billing\Providers\BillingServiceProvider"
+        "Modules\\Billing\\Providers\\BillingServiceProvider"
     ],
     "files": []
 }

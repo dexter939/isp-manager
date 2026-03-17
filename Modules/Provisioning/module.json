@@ -5,7 +5,7 @@
     "keywords": ["provisioning", "orders", "carrier", "openfiber", "fibercop"],
     "priority": 3,
     "providers": [
-        "Modules\Provisioning\Providers\ProvisioningServiceProvider"
+        "Modules\\Provisioning\\Providers\\ProvisioningServiceProvider"
     ],
     "files": []
 }

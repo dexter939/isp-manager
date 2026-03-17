@@ -5,7 +5,7 @@
     "keywords": ["coverage", "postgis", "fibercop", "openfiber"],
     "priority": 1,
     "providers": [
-        "Modules\Coverage\Providers\CoverageServiceProvider"
+        "Modules\\Coverage\\Providers\\CoverageServiceProvider"
     ],
     "files": []
 }
