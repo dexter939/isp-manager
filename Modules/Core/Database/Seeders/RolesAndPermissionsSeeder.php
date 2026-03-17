@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ModulesCoreDatabaseSeeders;
+namespace Modules\Core\Database\Seeders;
 
 use IlluminateDatabaseSeeder;
 use SpatiePermissionModelsPermission;

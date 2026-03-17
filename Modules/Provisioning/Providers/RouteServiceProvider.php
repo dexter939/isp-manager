@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules${module}\Providers;
+namespace Modules\Provisioning\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
