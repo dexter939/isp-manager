@@ -61,7 +61,7 @@ prompt_with_default DB_PASSWORD    "Password PostgreSQL (uguale a server 1)" ""
 prompt_with_default REDIS_PASSWORD "Password Redis (uguale a server 1)"      ""
 prompt_with_default REPL_PASSWORD  "Password utente replicator"              ""
 prompt_with_default BACKUP_DIR     "Directory backup PostgreSQL"             "/opt/ispmanager-backups"
-prompt_with_default GIT_REPO       "URL repository Git (per i Dockerfile)"   ""
+prompt_with_default GIT_REPO       "URL repository Git (per i Dockerfile)"   "https://github.com/dexter939/isp-manager.git"
 prompt_with_default PROJECT_DIR    "Directory progetto (per build immagini)"  "/var/www/ispmanager"
 
 [ -z "$DB_PASSWORD" ]    && error "DB_PASSWORD obbligatoria"

@@ -58,7 +58,7 @@ prompt_with_default DB_PASSWORD  "Password PostgreSQL"                       "$(
 prompt_with_default REDIS_PASSWORD "Password Redis"                          "$(openssl rand -base64 16 | tr -d '/+=')"
 prompt_with_default REPL_PASSWORD  "Password utente 'replicator' (PostgreSQL HA)" "$(openssl rand -base64 16 | tr -d '/+=')"
 prompt_with_default MINIO_SECRET   "Password MinIO (min. 12 char)"           "$(openssl rand -base64 12 | tr -d '/+=')"
-prompt_with_default GIT_REPO       "URL repository Git (lascia vuoto se copi manualmente)" ""
+prompt_with_default GIT_REPO       "URL repository Git (lascia vuoto se copi manualmente)" "https://github.com/dexter939/isp-manager.git"
 prompt_with_default PROJECT_DIR    "Directory installazione"                 "/var/www/ispmanager"
 
 echo ""
