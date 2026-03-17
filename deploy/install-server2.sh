@@ -112,7 +112,32 @@ else
     info "Docker installato."
 fi
 
-apt-get install -y -qq netcat-openbsd 2>/dev/null || true
+apt-get install -y -qq netcat-openbsd iproute2 2>/dev/null || true
+
+# ── Libera porte occupate da servizi di sistema ───────────────────────────────
+section "Verifica porte"
+
+free_port() {
+    local port="$1" service="$2"
+    if ss -tlnp 2>/dev/null | grep -q ":${port} "; then
+        warn "Porta ${port} occupata — cerco il processo..."
+        for svc in "${service}" "${service}-server"; do
+            if systemctl is-active --quiet "$svc" 2>/dev/null; then
+                warn "Fermo servizio di sistema: ${svc}"
+                systemctl stop "$svc" && systemctl disable "$svc"
+                info "${svc} fermato."
+                return
+            fi
+        done
+        fuser -k "${port}/tcp" 2>/dev/null && info "Porta ${port} liberata." || \
+            error "Porta ${port} ancora occupata. Liberala manualmente."
+    else
+        info "Porta ${port} libera."
+    fi
+}
+
+free_port 8000 "apache2"
+free_port 8000 "nginx"
 
 # ── Progetto ──────────────────────────────────────────────────────────────────
 section "Copia codice sorgente"

@@ -96,6 +96,45 @@ else
     info "Docker installato: $(docker --version)"
 fi
 
+# ── Libera porte occupate da servizi di sistema ───────────────────────────────
+section "Verifica porte"
+
+free_port() {
+    local port="$1" service="$2"
+    if ss -tlnp 2>/dev/null | grep -q ":${port} " || \
+       netstat -tlnp 2>/dev/null | grep -q ":${port} "; then
+        warn "Porta ${port} occupata — cerco il processo..."
+        # Ferma servizi di sistema noti
+        for svc in "${service}" "${service}-server"; do
+            if systemctl is-active --quiet "$svc" 2>/dev/null; then
+                warn "Fermo servizio di sistema: ${svc}"
+                systemctl stop "$svc"
+                systemctl disable "$svc"
+                info "${svc} fermato e disabilitato."
+                return
+            fi
+        done
+        # Fallback: mostra cosa usa la porta
+        warn "Processo che usa la porta ${port}:"
+        ss -tlnp | grep ":${port} " || true
+        ask "Vuoi forzare la kill del processo sulla porta ${port}? [s/N]:"
+        read -r KILL_CONF
+        if [[ "$KILL_CONF" =~ ^[sS]$ ]]; then
+            fuser -k "${port}/tcp" 2>/dev/null || true
+            info "Porta ${port} liberata."
+        else
+            error "Porta ${port} ancora occupata. Liberala manualmente e riesegui."
+        fi
+    else
+        info "Porta ${port} libera."
+    fi
+}
+
+apt-get install -y -qq iproute2 2>/dev/null || true
+free_port 5432 "postgresql"
+free_port 6379 "redis"
+free_port 9000 "minio"
+
 # ── Progetto ──────────────────────────────────────────────────────────────────
 section "Copia codice sorgente"
 
