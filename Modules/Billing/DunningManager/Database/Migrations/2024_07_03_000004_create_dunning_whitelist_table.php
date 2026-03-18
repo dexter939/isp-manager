@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('dunning_whitelist', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->string('reason');
             $table->timestamp('expires_at')->nullable();
             $table->foreignId('created_by')->constrained('users');

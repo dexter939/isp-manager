@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('online_payment_methods', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('customer_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->string('gateway', 20); // stripe|nexi
             $table->string('external_customer_id')->nullable();
             $table->string('external_method_id');

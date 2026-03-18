@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->foreignId('customer_id')
                   ->nullable()
-                  ->constrained('users')
+                  ->constrained('customers')
                   ->nullOnDelete();
 
             // Stato wizard

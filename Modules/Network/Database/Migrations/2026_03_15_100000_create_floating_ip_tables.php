@@ -15,22 +15,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('tenant_id')->index();
             $table->string('name');
-            $table->uuid('master_pppoe_account_id');
-            $table->uuid('failover_pppoe_account_id');
+            $table->uuid('master_pppoe_account_id')->nullable();
+            $table->uuid('failover_pppoe_account_id')->nullable();
             $table->string('status')->default('master_active')
                   ->comment('master_active|failover_active|both_down');
             $table->timestamp('last_failover_at')->nullable();
             $table->timestamp('last_recovery_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('master_pppoe_account_id')
-                  ->references('id')->on('pppoe_accounts')
-                  ->onDelete('restrict');
-
-            $table->foreign('failover_pppoe_account_id')
-                  ->references('id')->on('pppoe_accounts')
-                  ->onDelete('restrict');
         });
 
         // ── floating_ip_resources ─────────────────────────────────────────────

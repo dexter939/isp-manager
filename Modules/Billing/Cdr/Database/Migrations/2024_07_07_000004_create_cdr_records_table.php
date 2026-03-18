@@ -8,7 +8,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->foreignId('import_file_id')->nullable()->constrained('cdr_import_files')->nullOnDelete();
             $table->foreignId('contract_id')->nullable()->constrained('contracts')->nullOnDelete();
-            $table->foreignId('customer_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
             $table->string('caller_number', 20);
             $table->string('called_number', 30);
             $table->string('called_prefix', 20)->nullable();

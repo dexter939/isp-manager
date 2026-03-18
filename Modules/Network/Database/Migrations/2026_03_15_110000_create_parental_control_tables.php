@@ -44,10 +44,6 @@ return new class extends Migration
                   ->references('id')->on('customers')
                   ->onDelete('restrict');
 
-            $table->foreign('pppoe_account_id')
-                  ->references('id')->on('pppoe_accounts')
-                  ->onDelete('set null');
-
             $table->foreign('profile_id')
                   ->references('id')->on('parental_control_profiles')
                   ->onDelete('restrict');

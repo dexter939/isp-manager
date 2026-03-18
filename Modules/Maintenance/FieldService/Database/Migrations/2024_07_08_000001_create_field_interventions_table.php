@@ -9,7 +9,7 @@ return new class extends Migration {
             $table->uuid('uuid')->unique();
             $table->foreignId('ticket_id')->nullable()->constrained('trouble_tickets')->nullOnDelete();
             $table->foreignId('contract_id')->nullable()->constrained('contracts')->nullOnDelete();
-            $table->foreignId('customer_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->foreignId('technician_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('intervention_type', 20)->default('repair');
             $table->string('status', 20)->default('scheduled');
