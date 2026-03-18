@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Modules\Contracts\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Contracts\AgentNetwork\Providers\AgentNetworkServiceProvider;
+use Modules\Contracts\DuplicateChecker\Providers\DuplicateCheckerServiceProvider;
 use Modules\Contracts\Services\ContractService;
 use Modules\Contracts\Services\CustomerService;
 use Modules\Contracts\Services\DocumentStorageService;
 use Modules\Contracts\Services\FEAService;
 use Modules\Contracts\Services\NotificationService;
 use Modules\Contracts\Services\PdfGeneratorService;
+use Modules\Contracts\WizardMobile\Providers\WizardMobileServiceProvider;
 
 class ContractsServiceProvider extends ServiceProvider
 {
@@ -27,6 +30,9 @@ class ContractsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(AgentNetworkServiceProvider::class);
+        $this->app->register(DuplicateCheckerServiceProvider::class);
+        $this->app->register(WizardMobileServiceProvider::class);
         $this->registerServices();
     }
 

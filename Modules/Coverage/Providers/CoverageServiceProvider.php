@@ -7,6 +7,7 @@ namespace Modules\Coverage\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\Coverage\Console\Commands\CoverageStatsCommand;
 use Modules\Coverage\Console\Commands\ImportCoverageCommand;
+use Modules\Coverage\Elevation\Providers\ElevationServiceProvider;
 use Modules\Coverage\Services\AddressNormalizer;
 use Modules\Coverage\Services\FeasibilityService;
 
@@ -31,6 +32,7 @@ class CoverageServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(ElevationServiceProvider::class);
 
         $this->app->singleton(AddressNormalizer::class);
 

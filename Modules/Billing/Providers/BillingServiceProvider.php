@@ -13,8 +13,17 @@ use Modules\Billing\Console\ImportSepaStatusCommand;
 use Modules\Billing\Jobs\BillingCycleJob;
 use Modules\Billing\Jobs\DunningJob;
 use Modules\Billing\Jobs\PrepaidBillingJob;
+use Modules\Billing\Bundles\Providers\BundlesServiceProvider;
+use Modules\Billing\Cdr\Providers\CdrServiceProvider;
+use Modules\Billing\CustomerBalance\Providers\CustomerBalanceServiceProvider;
+use Modules\Billing\DunningManager\Providers\DunningManagerServiceProvider;
 use Modules\Billing\Models\Invoice;
+use Modules\Billing\OnlinePayments\Providers\OnlinePaymentsServiceProvider;
+use Modules\Billing\PaymentMatching\Providers\PaymentMatchingServiceProvider;
 use Modules\Billing\Policies\InvoicePolicy;
+use Modules\Billing\PosteItaliane\Providers\PosteItalianeServiceProvider;
+use Modules\Billing\Proforma\Providers\ProformaServiceProvider;
+use Modules\Billing\Sdi\Providers\SdiServiceProvider;
 
 class BillingServiceProvider extends ServiceProvider
 {
@@ -40,6 +49,15 @@ class BillingServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(BundlesServiceProvider::class);
+        $this->app->register(CdrServiceProvider::class);
+        $this->app->register(CustomerBalanceServiceProvider::class);
+        $this->app->register(DunningManagerServiceProvider::class);
+        $this->app->register(OnlinePaymentsServiceProvider::class);
+        $this->app->register(PaymentMatchingServiceProvider::class);
+        $this->app->register(PosteItalianeServiceProvider::class);
+        $this->app->register(ProformaServiceProvider::class);
+        $this->app->register(SdiServiceProvider::class);
     }
 
     protected function registerConfig(): void

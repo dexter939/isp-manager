@@ -17,6 +17,7 @@ use Modules\Network\Listeners\DeprovisionRadiusUserListener;
 use Modules\Network\Listeners\ProvisionRadiusUserListener;
 use Modules\Network\Listeners\RestoreRadiusAccessListener;
 use Modules\Network\Listeners\SuspendRadiusUserListener;
+use Modules\Network\FairUsage\Providers\FairUsageServiceProvider;
 use Modules\Network\Services\DnsFilter\DnsFilterResolverInterface;
 use Modules\Network\Services\DnsFilter\LocalBindResolver;
 use Modules\Network\Services\DnsFilter\WhaleboneResolver;
@@ -44,6 +45,7 @@ class NetworkServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(FairUsageServiceProvider::class);
         $this->registerDnsFilterResolver();
     }
 
