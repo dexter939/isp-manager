@@ -13,7 +13,7 @@ return new class extends Migration
         // ── floating_ip_pairs ─────────────────────────────────────────────────
         Schema::create('floating_ip_pairs', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->string('name');
             $table->uuid('master_pppoe_account_id')->nullable();
             $table->uuid('failover_pppoe_account_id')->nullable();

@@ -14,7 +14,7 @@ return new class extends Migration
         // ── parental_control_profiles ─────────────────────────────────────────
         Schema::create('parental_control_profiles', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('is_default')->default(false);
@@ -28,8 +28,8 @@ return new class extends Migration
         // ── parental_control_subscriptions ────────────────────────────────────
         Schema::create('parental_control_subscriptions', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
-            $table->uuid('customer_id');
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedBigInteger('customer_id');
             $table->uuid('pppoe_account_id')->nullable();
             $table->uuid('profile_id');
             $table->string('status')->default('pending')
@@ -56,7 +56,7 @@ return new class extends Migration
         // This can be done post-migration with a DB::statement if needed.
         Schema::create('parental_control_logs', function (Blueprint $table): void {
             $table->bigIncrements('id');
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->uuid('subscription_id');
             $table->string('queried_domain');
             $table->string('action')->comment('allowed|blocked');
