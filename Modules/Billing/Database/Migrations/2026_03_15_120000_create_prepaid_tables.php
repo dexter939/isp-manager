@@ -13,8 +13,8 @@ return new class extends Migration
         // 1. prepaid_wallets
         Schema::create('prepaid_wallets', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
-            $table->uuid('customer_id');
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
             $table->integer('balance_amount')->default(0);
             $table->char('balance_currency', 3)->default('EUR');
@@ -28,7 +28,7 @@ return new class extends Migration
         // 2. prepaid_topup_products
         Schema::create('prepaid_topup_products', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->string('name');
             $table->integer('amount_amount');
             $table->char('amount_currency', 3)->default('EUR');
@@ -42,7 +42,7 @@ return new class extends Migration
         // 3. prepaid_transactions
         Schema::create('prepaid_transactions', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->uuid('wallet_id');
             $table->foreign('wallet_id')->references('id')->on('prepaid_wallets')->cascadeOnDelete();
             $table->string('type');
@@ -60,8 +60,8 @@ return new class extends Migration
         // 4. prepaid_resellers
         Schema::create('prepaid_resellers', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
-            $table->uuid('customer_id');
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
             $table->uuid('wallet_id');
             $table->foreign('wallet_id')->references('id')->on('prepaid_wallets')->cascadeOnDelete();
@@ -75,7 +75,7 @@ return new class extends Migration
         // 5. prepaid_topup_orders
         Schema::create('prepaid_topup_orders', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tenant_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->uuid('wallet_id');
             $table->foreign('wallet_id')->references('id')->on('prepaid_wallets')->cascadeOnDelete();
             $table->uuid('product_id');
